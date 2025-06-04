@@ -36,7 +36,6 @@ class UserServiceImplTest {
     @Test
     void shouldCreateUser() {
         UserDto userDto = new UserDto(null, "test@email.com", "Test User");
-        User user = UserMapper.toUser(userDto);
         User savedUser = new User(1L, "test@email.com", "Test User");
 
         when(userRepository.findUserByEmail(userDto.getEmail())).thenReturn(Optional.empty());

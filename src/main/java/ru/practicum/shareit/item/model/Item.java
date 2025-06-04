@@ -19,5 +19,6 @@ public class Item {
     private String description;
     @NotNull(message = "Owner cannot be null")
     private User owner;
+    @NotNull(message = "Available cannot be null")
     private Boolean available;
 }

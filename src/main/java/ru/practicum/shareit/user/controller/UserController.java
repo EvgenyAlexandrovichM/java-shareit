@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
-        log.info("Request to create user {}", userDto);
+        log.info("Request to create user: {}", userDto);
         UserDto createdUser = service.create(userDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
@@ -31,21 +31,21 @@ public class UserController {
     @PatchMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long userId,
                                               @RequestBody @Valid UserUpdateDto userUpdateDto) {
-        log.info("Request to update user with id {} and data {}", userId, userUpdateDto);
+        log.info("Request to update user with id: {} and data: {}", userId, userUpdateDto);
         UserDto updatedUser = service.update(userId, userUpdateDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
-        log.info("Request to remove user with id {}", userId);
+        log.info("Request to remove user with id: {}", userId);
         service.delete(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
-        log.info("Request to get user with id {}", userId);
+        log.info("Request to get user with id: {}", userId);
         UserDto userDto = service.getUserById(userId);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }

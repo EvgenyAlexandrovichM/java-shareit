@@ -56,6 +56,14 @@ public class ErrorHandler {
         return createErrorResponse(errors, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error("IllegalArgumentException occurred", e);
+        List<String> errors = new ArrayList<>();
+        errors.add("IllegalArgument: " + e.getMessage());
+        return createErrorResponse(errors, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllExceptions(Exception e) {
         log.error("Unhandled exception occurred", e);
