@@ -29,8 +29,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto create(Long userId, ItemDto itemDto) {
         log.info("Creating item: {}", itemDto);
-        User owner = userRepository.findUserById(userId)
-                .orElseThrow(() -> new NotFoundException("Owner not found with id " + userId));
+        User owner = getUserOrThrow(userId);
         itemDto.setOwner(owner);
         Item item = ItemMapper.toItem(itemDto);
         Item createdItem = itemRepository.save(item);
@@ -69,13 +68,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getItemsByOwnerId(Long id) {
         log.info("Getting items for owner id: {}", id);
-        List<Item> items = itemRepository.findAll();
-        if (items == null) {
-            throw new NotFoundException("Item not found with id " + id);
-        }
+        getUserOrThrow(id);
+        List<Item> items = itemRepository.findItemsByOwnerId(id);
         return items
                 .stream()
-                .filter(item -> item.getOwner() != null && item.getOwner().getId().equals(id))
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
@@ -88,22 +84,21 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        List<Item> items = itemRepository.findAll();
-        if (items == null) {
-            log.warn("Item: {} not found", text);
-            throw new NotFoundException("Item not found with text " + text);
-        }
+        String lowerCaseText = text.toLowerCase();
+        List<Item> items = itemRepository.searchItems(lowerCaseText);
         return items
                 .stream()
-                .filter(item -> item.getAvailable() != null && item.getAvailable())
-                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     private Item getItemOrThrow(Long id) {
         return itemRepository.findItemById(id)
-                .orElseThrow(() -> new NotFoundException("User not found with id " + id));
+                .orElseThrow(() -> new NotFoundException("Item not found with id " + id));
+    }
+
+    private User getUserOrThrow(Long id) {
+        return userRepository.findUserById(id)
+                .orElseThrow(() -> new NotFoundException("Owner not found with id " + id));
     }
 }

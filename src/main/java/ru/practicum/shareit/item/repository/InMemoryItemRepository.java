@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
@@ -43,5 +44,24 @@ public class InMemoryItemRepository implements ItemRepository {
     @Override
     public List<Item> findAll() {
         return new ArrayList<>(items.values());
+    }
+
+    @Override
+    public List<Item> findItemsByOwnerId(Long id) {
+        log.info("Finding items for owner id: {}", id);
+        return items.values()
+                .stream()
+                .filter(item -> item.getOwner() != null && item.getOwner().getId().equals(id))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Item> searchItems(String text) {
+        log.info("Searching items with text: {}", text);
+        return items.values()
+                .stream()
+                .filter(item -> item.getAvailable() != null && item.getAvailable())
+                .filter(item -> item.getName().toLowerCase().contains(text) || item.getDescription().toLowerCase().contains(text))
+                .collect(Collectors.toList());
     }
 }
