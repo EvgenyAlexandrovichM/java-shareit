@@ -19,13 +19,13 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemService itemService;
+    private final ItemService service;
 
     @PostMapping
     public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @RequestBody @Valid ItemDto itemDto) {
         log.info("Request to create item: {}", itemDto);
-        ItemDto item = itemService.create(userId, itemDto);
+        ItemDto item = service.create(userId, itemDto);
         return new ResponseEntity<>(item, HttpStatus.CREATED);
     }
 
@@ -34,7 +34,7 @@ public class ItemController {
                                               @PathVariable Long itemId,
                                               @RequestBody @Valid ItemUpdateDto itemUpdateDto) {
         log.info("Request to update item id: {} by user id: {}", itemId, userId);
-        ItemDto item = itemService.update(userId, itemId, itemUpdateDto);
+        ItemDto item = service.update(userId, itemId, itemUpdateDto);
         return new ResponseEntity<>(item, HttpStatus.OK);
 
     }
@@ -43,14 +43,14 @@ public class ItemController {
     public ResponseEntity<ItemDto> getItemById(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                @PathVariable Long itemId) {
         log.info("Request to get item by id: {}", itemId);
-        ItemDto item = itemService.getItemById(itemId);
+        ItemDto item = service.getItemById(itemId);
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<ItemDto>> getItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Request to get items for owner id: {}", userId);
-        List<ItemDto> items = itemService.getItemsByOwnerId(userId);
+        List<ItemDto> items = service.getItemsByOwnerId(userId);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
@@ -58,7 +58,7 @@ public class ItemController {
     public ResponseEntity<List<ItemDto>> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                      @RequestParam String text) {
         log.info("Request to search items with text: {}", text);
-        List<ItemDto> items = itemService.searchItems(text);
+        List<ItemDto> items = service.searchItems(text);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }

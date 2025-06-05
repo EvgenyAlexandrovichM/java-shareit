@@ -40,7 +40,7 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         log.info("Request to remove user with id: {}", userId);
         service.delete(userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{userId}")
