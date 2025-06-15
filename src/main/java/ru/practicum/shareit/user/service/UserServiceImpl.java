@@ -23,10 +23,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
-        log.info("Creating user {}", userDto);
+        log.info("Creating user: {}", userDto);
 
         if (userRepository.findUserByEmail(userDto.getEmail()).isPresent()) {
-            log.warn("User with email {} already exists", userDto.getEmail());
+            log.warn("User with email: {} already exists", userDto.getEmail());
             throw new ConflictException("User with email " + userDto.getEmail() + " already exists");
         }
 
@@ -36,14 +36,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(Long id, UserUpdateDto userUpdateDto) {
-        log.info("Updating user with id {} and data {}", id, userUpdateDto);
+        log.info("Updating user with id: {} and data: {}", id, userUpdateDto);
         User existingUser = getUserOrThrow(id);
 
         if (userUpdateDto.getEmail() != null && !userUpdateDto.getEmail().equals(existingUser.getEmail())) {
             Optional<User> conflictingUser = userRepository.findUserByEmail(userUpdateDto.getEmail());
 
             if (conflictingUser.isPresent() && !conflictingUser.get().getId().equals(existingUser.getId())) {
-                log.warn("Email {} is already taken by another user", userUpdateDto.getEmail());
+                log.warn("Email: {} is already taken by another user", userUpdateDto.getEmail());
                 throw new ConflictException("User with email " + userUpdateDto.getEmail() + " already exists");
             }
             existingUser.setEmail(userUpdateDto.getEmail());
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-        log.info("Removing user with id {}", id);
+        log.info("Removing user with id: {}", id);
         User existringUser = getUserOrThrow(id);
         userRepository.delete(existringUser);
     }
