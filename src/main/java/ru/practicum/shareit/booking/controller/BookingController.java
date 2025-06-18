@@ -25,8 +25,8 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestBody @Valid BookingCreateDto bookingCreateDto) {
 
-       BookingResponseDto bookingDto = bookingService.createBooking(userId, bookingCreateDto);
-       return new ResponseEntity<>(bookingDto, HttpStatus.CREATED);
+        BookingResponseDto bookingDto = bookingService.createBooking(userId, bookingCreateDto);
+        return new ResponseEntity<>(bookingDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{bookingId}")
@@ -66,5 +66,4 @@ public class BookingController {
         List<BookingResponseDto> bookings = bookingService.getBookingsByOwner(ownerId, state);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
-
 }

@@ -28,7 +28,7 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemResponseDto> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                              @RequestBody @Valid ItemCreateDto itemCreateDto) {
+                                                      @RequestBody @Valid ItemCreateDto itemCreateDto) {
         log.info("Request to create item: {}", itemCreateDto);
         ItemResponseDto item = itemService.create(userId, itemCreateDto);
         return new ResponseEntity<>(item, HttpStatus.CREATED);
@@ -46,8 +46,8 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<ItemResponseDto> updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                              @PathVariable Long itemId,
-                                              @RequestBody @Valid ItemUpdateDto itemUpdateDto) {
+                                                      @PathVariable Long itemId,
+                                                      @RequestBody @Valid ItemUpdateDto itemUpdateDto) {
         log.info("Request to update item id: {} by user id: {}", itemId, userId);
         ItemResponseDto item = itemService.update(userId, itemId, itemUpdateDto);
         return new ResponseEntity<>(item, HttpStatus.OK);
@@ -56,7 +56,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<ItemResponseDto> getItemById(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                               @PathVariable Long itemId) {
+                                                       @PathVariable Long itemId) {
         log.info("Request to get item by id: {}", itemId);
         ItemResponseDto item = itemService.getItemById(itemId);
         return new ResponseEntity<>(item, HttpStatus.OK);
@@ -71,7 +71,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<List<ItemResponseDto>> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                     @RequestParam String text) {
+                                                             @RequestParam String text) {
         log.info("Request to search items with text: {}", text);
         List<ItemResponseDto> items = itemService.searchItems(text);
         return new ResponseEntity<>(items, HttpStatus.OK);
