@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.dto.mapper;
 
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
+import ru.practicum.shareit.item.comment.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
@@ -7,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemMapper {
     public static ItemResponseDto toResponseDto(Item item) {
@@ -18,7 +21,24 @@ public class ItemMapper {
                 item.getAvailable(),
                 null,
                 null,
+                new ArrayList<>(),
                 new ArrayList<>()
+        );
+    }
+
+    public static ItemResponseDto toResponseDto(Item item,
+                                                List<BookingResponseDto> bookings,
+                                                List<CommentResponseDto> comments) {
+        return new ItemResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getOwner().getId(),
+                item.getAvailable(),
+                null,
+                null,
+                bookings,
+                comments
         );
     }
 

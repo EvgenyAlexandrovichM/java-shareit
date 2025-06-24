@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
+import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.comment.dto.CommentResponseDto;
@@ -21,6 +25,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -32,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
     @Override
@@ -79,9 +85,35 @@ public class ItemServiceImpl implements ItemService {
         log.info("Getting items for owner id: {}", id);
         getUserOrThrow(id);
         List<Item> items = itemRepository.findByOwnerId(id);
+        if (items.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> itemIds = items.stream()
+                .map(Item::getId)
+                .collect(Collectors.toList());
+        List<Booking> bookings = bookingRepository.findApprovedByItemIdsOrderByStartAsc(itemIds);
+
+        Map<Long, List<BookingResponseDto>> bookingsByItemId = bookings.stream()
+                .collect(Collectors.groupingBy(booking -> booking.getItem().getId(),
+                        Collectors.mapping(BookingMapper::toBookingDto, Collectors.toList())
+                        ));
+
+        List<Comment> comments = commentRepository.findByItemIdIn(itemIds);
+
+        Map<Long, List<CommentResponseDto>> commentsByItemId = comments.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getItem().getId(),
+                        Collectors.mapping(CommentMapper::toCommentDto, Collectors.toList())
+                ));
         return items
                 .stream()
-                .map(ItemMapper::toResponseDto)
+                .map(item -> {
+                    List<BookingResponseDto> bookingsDto = bookingsByItemId
+                            .getOrDefault(item.getId(), Collections.emptyList());
+                    List<CommentResponseDto> commentsDto = commentsByItemId
+                            .getOrDefault(item.getId(), Collections.emptyList());
+                    return ItemMapper.toResponseDto(item, bookingsDto, commentsDto);
+                })
                 .collect(Collectors.toList());
     }
 

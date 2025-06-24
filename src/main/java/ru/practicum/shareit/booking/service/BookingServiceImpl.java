@@ -38,9 +38,13 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto createBooking(Long userId, BookingCreateDto bookingCreateDto) {
+
+        if (!bookingCreateDto.getEnd().isAfter(bookingCreateDto.getStart())) {
+            throw new BadRequestException("End time must be after start time");
+        }
+
         User booker = getUserOrThrow(userId);
         Item item = getItemOrThrow(bookingCreateDto.getItemId());
-
         if (!item.getAvailable()) {
             throw new BadRequestException("Item " + item.getId() + " is not available");
         }
@@ -48,13 +52,9 @@ public class BookingServiceImpl implements BookingService {
         if (item.getOwner().getId().equals(userId)) {
             throw new ForbiddenException("User " + userId + " is owner of item " + item.getId());
         }
-        Booking booking = new Booking();
-        booking.setStart(bookingCreateDto.getStart());
-        booking.setEnd(bookingCreateDto.getEnd());
-        booking.setItem(item);
-        booking.setBooker(booker);
-        booking.setStatus(BookingStatus.WAITING);
-        return BookingMapper.toBookingDto(bookingRepository.save(booking));
+        Booking booking = BookingMapper.toBooking(bookingCreateDto, item, booker);
+        Booking saved = bookingRepository.save(booking);
+        return BookingMapper.toBookingDto(saved);
 
     }
 
@@ -85,7 +85,10 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toBookingDto(booking);
     }
 
+    @Override
+    @Transactional
     public List<BookingResponseDto> getBookingsByUser(Long userId, BookingState state, int page, int size) {
+        getUserOrThrow(userId);
         PageRequest pageR = PageRequest.of(page, size);
         List<Booking> bookings = switch (state) {
             case CURRENT -> bookingRepository.findCurrentBookings(userId);
@@ -101,6 +104,8 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
     public List<BookingResponseDto> getBookingsByOwner(Long ownerId, BookingState state) {
         getUserOrThrow(ownerId);
         List<Booking> bookings = switch (state) {
