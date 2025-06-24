@@ -63,13 +63,4 @@ public class ItemMapper {
         }
         return item;
     }
-
-    public static Item toItem(ItemResponseDto itemResponseDto, User owner) {
-        Item item = new Item();
-        item.setName(itemResponseDto.getName());
-        item.setDescription(itemResponseDto.getDescription());
-        item.setAvailable(itemResponseDto.getAvailable());
-        item.setOwner(owner);
-        return item;
-    }
 }
