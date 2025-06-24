@@ -84,6 +84,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemResponseDto> getItemsByOwnerId(Long id) {
         log.info("Getting items for owner id: {}", id);
         getUserOrThrow(id);
+        log.debug("User with id {} verified", id);
         List<Item> items = itemRepository.findByOwnerId(id);
         if (items.isEmpty()) {
             return Collections.emptyList();
