@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -56,11 +57,11 @@ public class ErrorHandler {
         return createErrorResponse(errors, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.error("IllegalArgumentException occurred", e);
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
+        log.error("BadRequestException occurred", e);
         List<String> errors = new ArrayList<>();
-        errors.add("IllegalArgument: " + e.getMessage());
+        errors.add("Bad request: " + e.getMessage());
         return createErrorResponse(errors, HttpStatus.BAD_REQUEST);
     }
 
