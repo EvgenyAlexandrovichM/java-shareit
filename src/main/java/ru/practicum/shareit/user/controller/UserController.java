@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserCreateDto;
-import ru.practicum.shareit.user.dto.UserResponseDto;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -23,17 +22,17 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid UserCreateDto userCreateDto) {
-        log.info("Request to create user: {}", userCreateDto);
-        UserResponseDto createdUser = service.create(userCreateDto);
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
+        log.info("Request to create user: {}", userDto);
+        UserDto createdUser = service.create(userDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId,
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long userId,
                                               @RequestBody @Valid UserUpdateDto userUpdateDto) {
         log.info("Request to update user with id: {} and data: {}", userId, userUpdateDto);
-        UserResponseDto updatedUser = service.update(userId, userUpdateDto);
+        UserDto updatedUser = service.update(userId, userUpdateDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
@@ -45,16 +44,16 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
         log.info("Request to get user with id: {}", userId);
-        UserResponseDto userResponse = service.getUserById(userId);
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        UserDto userDto = service.getUserById(userId);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getUsers() {
+    public ResponseEntity<List<UserDto>> getUsers() {
         log.info("Request to get all users");
-        List<UserResponseDto> users = service.getAll();
+        List<UserDto> users = service.getAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

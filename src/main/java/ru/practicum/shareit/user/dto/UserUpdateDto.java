@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserUpdateDto {
 
-    private String name;
     @Email(message = "Incorrect email address")
     private String email;
+    private String name;
 }
