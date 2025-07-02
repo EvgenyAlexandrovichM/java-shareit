@@ -13,6 +13,7 @@ public class UserCreateDto {
 
     @NotBlank(message = "Name cannot be empty")
     private String name;
+
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Incorrect email address")
     private String email;

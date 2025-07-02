@@ -1,45 +1,34 @@
 package ru.practicum.shareit.request.dto.mapper;
 
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.practicum.shareit.item.dto.ItemRequestItemDto;
+import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestWithResponsesDto;
-import ru.practicum.shareit.request.dto.ItemResponseDto;
+import ru.practicum.shareit.mapperconfig.MapStructConfig;
+import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithItemsDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Mapper(config = MapStructConfig.class, uses = { ItemMapper.class })
+public interface ItemRequestMapper {
 
-public class ItemRequestMapper {
+    ItemRequestResponseDto toItemRequestResponseDto(ItemRequest request);
 
-    public static ItemRequestDto toItemRequestDto(ItemRequest itemRequest) {
-        return ItemRequestDto.builder()
-                .id(itemRequest.getId())
-                .description(itemRequest.getDescription())
-                .created(itemRequest.getCreated())
-                .build();
-    }
+    @Mapping(
+            target = "items",
+            source = "items",
+            qualifiedByName = "toItemRequestItemDto"
+    )
+    ItemRequestWithItemsDto toItemRequestWithItemsDto(
+            ItemRequest request,
+            List<Item> items
+    );
 
-    public static ItemResponseDto toResponseDto(ItemRequest itemRequest, Item item) {
-        return ItemResponseDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .ownerId(item.getOwner().getId())
-                .build();
-    }
-
-    public static ItemRequestWithResponsesDto toWithResponsesDto(ItemRequest itemRequest) {
-        List<ItemResponseDto> responses = itemRequest.getItems()
-                .stream()
-                .map(item -> toResponseDto(itemRequest, item))
-                .collect(Collectors.toList());
-
-        return ItemRequestWithResponsesDto.builder()
-                .id(itemRequest.getId())
-                .description(itemRequest.getDescription())
-                .created(itemRequest.getCreated())
-                .responses(responses)
-                .build();
-    }
-
+    @Named("toItemRequestItemDto")
+    @Mapping(source = "name",     target = "name")
+    @Mapping(source = "owner.id", target = "ownerId")
+    ItemRequestItemDto toItemRequestItemDto(Item item);
 }

@@ -20,6 +20,8 @@ import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -39,13 +41,21 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     @Transactional
     public ItemResponseDto create(Long userId, ItemCreateDto itemCreateDto) {
         log.info("Creating item: {}", itemCreateDto);
         User owner = getUserOrThrow(userId);
-        Item item = ItemMapper.toItem(itemCreateDto, owner);
+        ItemRequest itemRequest = null;
+        if (itemCreateDto.getRequestId() != null) {
+            itemRequest = itemRequestRepository.findById(itemCreateDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException(
+                            "Request not found: " + itemCreateDto.getRequestId()
+                    ));
+        }
+        Item item = ItemMapper.toItem(itemCreateDto, owner, itemRequest);
         Item createdItem = itemRepository.save(item);
         return ItemMapper.toResponseDto(createdItem);
     }
@@ -98,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
         Map<Long, List<BookingResponseDto>> bookingsByItemId = bookings.stream()
                 .collect(Collectors.groupingBy(booking -> booking.getItem().getId(),
                         Collectors.mapping(BookingMapper::toBookingDto, Collectors.toList())
-                        ));
+                ));
 
         List<Comment> comments = commentRepository.findByItemIdIn(itemIds);
 

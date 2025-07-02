@@ -74,7 +74,17 @@ public class ErrorHandler {
     }
 
     private ResponseEntity<ErrorResponse> createErrorResponse(List<String> errors, HttpStatus status) {
-        ErrorResponse response = new ErrorResponse(errors, LocalDateTime.now(), status.value());
-        return new ResponseEntity<>(response, status);
+        if (errors != null && !errors.isEmpty()) {
+            ErrorResponse response;
+            if (errors.size() == 1) {
+                response = new ErrorResponse(errors.getFirst(), LocalDateTime.now(), status.value());
+            } else {
+                response = new ErrorResponse(errors, LocalDateTime.now(), status.value());
+            }
+            return new ResponseEntity<>(response, status);
+        } else {
+            ErrorResponse response = new ErrorResponse("Unknown error", LocalDateTime.now(), status.value());
+            return new ResponseEntity<>(response, status);
+        }
     }
 }
