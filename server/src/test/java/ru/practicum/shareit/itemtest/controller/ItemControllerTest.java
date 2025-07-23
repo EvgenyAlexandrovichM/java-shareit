@@ -59,7 +59,8 @@ public class ItemControllerTest {
 
         ItemResponseDto output = new ItemResponseDto(
                 1L,
-                "Hockey stick", "Stick - CCM Jetspeed Ft5 Pro INT, flex - 65, bend - P90, grip - RHT",
+                "Hockey stick",
+                "Stick - CCM Jetspeed Ft5 Pro INT, flex - 65, bend - P90, grip - RHT",
                 2L,
                 true,
                 null,

@@ -33,7 +33,7 @@ public class UserServiceImplTest {
     private User user;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         user = new User(1L, "Ivan", "ivan@yandex.ru");
     }
 
