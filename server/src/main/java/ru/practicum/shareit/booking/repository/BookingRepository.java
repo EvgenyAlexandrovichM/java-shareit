@@ -28,7 +28,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "FROM Booking b " +
             "WHERE b.booker.id = :bookerId AND b.end < CURRENT_TIMESTAMP " +
             "ORDER BY b.start DESC")
-    List<Booking> findPastBookings(@Param("bookerId") Long bookerId);
+    List<Booking> findPastBookings(@Param("bookerId") Long bookerId); //
 
     @Query("SELECT b " +
             "FROM Booking b " +

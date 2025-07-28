@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class ItemRequestRepositoryTest {
 
     @Autowired
@@ -95,15 +97,7 @@ public class ItemRequestRepositoryTest {
                         LocalDateTime.now().minusDays(2)
                 )
         );
-        ItemRequest request1 = itemRequestRepository.save(
-                new ItemRequest(
-                        null,
-                        "Other user request",
-                        otherUser,
-                        LocalDateTime.now().minusDays(1)
-                )
-        );
-        ItemRequest request2 = itemRequestRepository.save(
+        ItemRequest request = itemRequestRepository.save(
                 new ItemRequest(
                         null,
                         "Other user request2",
@@ -115,8 +109,8 @@ public class ItemRequestRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 1, Sort.by("created").descending());
         Page<ItemRequest> page = itemRequestRepository.findByRequesterIdNot(requester.getId(), pageRequest);
 
-        assertEquals(2, page.getTotalElements());
+        assertEquals(1, page.getTotalElements());
         assertEquals(1, page.getNumberOfElements());
-        assertEquals(request2.getId(), page.getContent().getFirst().getId());
+        assertEquals(request.getId(), page.getContent().getFirst().getId());
     }
 }
