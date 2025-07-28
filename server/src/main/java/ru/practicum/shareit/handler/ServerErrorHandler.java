@@ -1,5 +1,6 @@
 package ru.practicum.shareit.handler;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
@@ -57,6 +59,17 @@ public class ServerErrorHandler {
         List<String> errors = new ArrayList<>();
         errors.add("Server error: " + e.getMessage());
         return createErrorResponse(errors, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+        log.error("ConstraintViolationException occurred", ex);
+
+        List<String> errors = ex.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .collect(Collectors.toList());
+
+        return createErrorResponse(errors, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<ErrorResponse> createErrorResponse(List<String> errors, HttpStatus status) {

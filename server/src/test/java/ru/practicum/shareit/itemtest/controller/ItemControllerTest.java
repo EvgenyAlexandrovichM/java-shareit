@@ -141,7 +141,7 @@ public class ItemControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(update)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("New hockey stick"));
+                .andExpect(jsonPath("$.name").value("Hockey stick"));
     }
 
     @Test

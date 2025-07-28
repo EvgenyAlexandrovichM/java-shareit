@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ResponseEntity<ItemRequestResponseDto> createRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                                @RequestBody ItemRequestCreateDto dto) {
+                                                                @RequestBody @Valid ItemRequestCreateDto dto) {
 
         ItemRequestResponseDto created = requestService.create(userId, dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);

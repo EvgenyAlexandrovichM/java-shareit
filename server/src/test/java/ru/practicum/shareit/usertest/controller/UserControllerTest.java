@@ -31,11 +31,11 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private UserService service;
-
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private UserService service;
 
     @Test
     void createUser_success() throws Exception {
