@@ -79,13 +79,13 @@ public class BookingControllerTest {
 
 
     @Test
-    void createBooking_success() throws  Exception {
+    void createBooking_success() throws Exception {
         given(service.createBooking(eq(3L), any(BookingCreateDto.class))).willReturn(response);
 
         mockMvc.perform(post("/bookings")
-                .header(HEADER, 3L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .header(HEADER, 3L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(100))
                 .andExpect(jsonPath("$.status").value("WAITING"));
@@ -97,9 +97,9 @@ public class BookingControllerTest {
                 .willThrow(new ConflictException("Item not available"));
 
         mockMvc.perform(post("/bookings")
-                .header(HEADER, 3L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .header(HEADER, 3L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Conflict: Item not available"));
     }
@@ -110,9 +110,9 @@ public class BookingControllerTest {
                 .willThrow(new BadRequestException("End before start"));
 
         mockMvc.perform(post("/bookings")
-                .header(HEADER, 3L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .header(HEADER, 3L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad request: End before start"));
     }
@@ -122,23 +122,23 @@ public class BookingControllerTest {
         given(service.approveBooking(2L, 100L, true)).willReturn(response);
 
         mockMvc.perform(patch("/bookings/100")
-                .header(HEADER, 2L)
-                .param("approved", "true"))
+                        .header(HEADER, 2L)
+                        .param("approved", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(100));
     }
 
     @Test
     void approveBooking_throwNotFound() throws Exception {
-       doThrow(new NotFoundException("Booking not found"))
-               .when(service)
-               .approveBooking(anyLong(), anyLong(), anyBoolean());
+        doThrow(new NotFoundException("Booking not found"))
+                .when(service)
+                .approveBooking(anyLong(), anyLong(), anyBoolean());
 
-       mockMvc.perform(patch("/bookings/5")
-               .header(HEADER, 2L)
-               .param("approved", "false"))
-               .andExpect(status().isNotFound())
-               .andExpect(jsonPath("$.error").value("Not found: Booking not found"));
+        mockMvc.perform(patch("/bookings/5")
+                        .header(HEADER, 2L)
+                        .param("approved", "false"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("Not found: Booking not found"));
     }
 
     @Test
@@ -146,7 +146,7 @@ public class BookingControllerTest {
         given(service.getBookingById(3L, 100L)).willReturn(response);
 
         mockMvc.perform(get("/bookings/100")
-                .header(HEADER, 3L))
+                        .header(HEADER, 3L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(100));
     }
@@ -158,18 +158,18 @@ public class BookingControllerTest {
                 .getBookingById(anyLong(), anyLong());
 
         mockMvc.perform(get("/bookings/100")
-                .header(HEADER, 3L))
+                        .header(HEADER, 3L))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("Access denied: Access denied"));
     }
 
     @Test
     void getBookingsByUser_success() throws Exception {
-        given(service.getBookingsByUser(3L, BookingState.ALL, 0 , 10))
+        given(service.getBookingsByUser(3L, BookingState.ALL, 0, 10))
                 .willReturn(List.of(response));
 
         mockMvc.perform(get("/bookings")
-                .header(HEADER, 3L))
+                        .header(HEADER, 3L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].id").value(100));
@@ -181,7 +181,7 @@ public class BookingControllerTest {
                 .willThrow(new NotFoundException("User not found"));
 
         mockMvc.perform(get("/bookings")
-                .header(HEADER, 99L))
+                        .header(HEADER, 99L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found: User not found"));
     }
@@ -191,7 +191,7 @@ public class BookingControllerTest {
         given(service.getBookingsByOwner(2L, BookingState.ALL)).willReturn(List.of(response));
 
         mockMvc.perform(get("/bookings/owner")
-                .header(HEADER, 2L))
+                        .header(HEADER, 2L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].status").value("WAITING"));
@@ -203,7 +203,7 @@ public class BookingControllerTest {
                 .willThrow(new NotFoundException("Owner not found"));
 
         mockMvc.perform(get("/bookings/owner")
-                .header(HEADER, 99L))
+                        .header(HEADER, 99L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found: Owner not found"));
     }

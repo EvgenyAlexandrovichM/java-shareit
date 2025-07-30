@@ -137,7 +137,7 @@ public class BookingServiceImplTest {
         emptyItem();
 
         assertThrows(NotFoundException.class,
-                () -> service.createBooking(booker.getId(),create));
+                () -> service.createBooking(booker.getId(), create));
 
         then(bookingRepository).should(never()).save(any());
     }
@@ -190,7 +190,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void  getBookingById_successOwner() {
+    void getBookingById_successOwner() {
         optionalBooking();
 
         BookingResponseDto result = service.getBookingById(owner.getId(), booking.getId());
@@ -229,7 +229,7 @@ public class BookingServiceImplTest {
     void getBookingsByUser_throwNotFound_bookerNotFound() {
         emptyBooker();
         assertThrows(NotFoundException.class,
-                () -> service.getBookingsByUser(booker.getId(), BookingState.ALL, 0 , 10));
+                () -> service.getBookingsByUser(booker.getId(), BookingState.ALL, 0, 10));
     }
 
     @Test

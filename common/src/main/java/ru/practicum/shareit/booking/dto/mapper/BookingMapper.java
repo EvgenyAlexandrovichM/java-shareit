@@ -11,7 +11,6 @@ import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 
-
 public class BookingMapper {
     public static BookingResponseDto toBookingDto(Booking booking) {
         return new BookingResponseDto(

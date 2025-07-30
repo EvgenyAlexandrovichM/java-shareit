@@ -46,8 +46,8 @@ public class UserControllerTest {
                 .willReturn(output);
 
         mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(input)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(input)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Ivan"))
@@ -62,8 +62,8 @@ public class UserControllerTest {
                 .willThrow(new ConflictException("Email already exists"));
 
         mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(input)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(input)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Conflict: Email already exists"));
     }
@@ -76,8 +76,8 @@ public class UserControllerTest {
                 .willThrow(new BadRequestException("Incorrect email address"));
 
         mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(input)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(input)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad request: Incorrect email address"));
     }
@@ -87,11 +87,11 @@ public class UserControllerTest {
         UserUpdateDto update = new UserUpdateDto("Ivan", null);
         UserResponseDto output = new UserResponseDto(1L, "Ivan", "ivan@yandex.ru");
 
-        given(service.update(eq(1L),any(UserUpdateDto.class))).willReturn(output);
+        given(service.update(eq(1L), any(UserUpdateDto.class))).willReturn(output);
 
         mockMvc.perform(patch("/users/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(update)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(update)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Ivan"))
                 .andExpect(jsonPath("$.email").value("ivan@yandex.ru"));
@@ -103,8 +103,8 @@ public class UserControllerTest {
         given(service.update(eq(10L), any(UserUpdateDto.class))).willThrow(new NotFoundException("User not found"));
 
         mockMvc.perform(patch("/users/10")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(update)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(update)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found: User not found"));
     }
@@ -117,8 +117,8 @@ public class UserControllerTest {
                 .willThrow(new BadRequestException("Incorrect email address"));
 
         mockMvc.perform(patch("/users/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(update)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(update)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad request: Incorrect email address"));
     }

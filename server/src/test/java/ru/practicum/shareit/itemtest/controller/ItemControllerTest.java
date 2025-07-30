@@ -69,13 +69,13 @@ public class ItemControllerTest {
                 List.of()
         );
 
-        given(itemService.create(eq(2L),any(ItemCreateDto.class)))
+        given(itemService.create(eq(2L), any(ItemCreateDto.class)))
                 .willReturn(output);
 
         mockMvc.perform(post("/items")
-                .header(USER_HEADER, 2L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .header(USER_HEADER, 2L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Hockey stick"))
@@ -96,9 +96,9 @@ public class ItemControllerTest {
                 .willThrow(new ConflictException("Duplicate"));
 
         mockMvc.perform(post("/items")
-                .header(USER_HEADER, 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .header(USER_HEADER, 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Conflict: Duplicate"));
 
@@ -114,8 +114,8 @@ public class ItemControllerTest {
         );
 
         mockMvc.perform(post("/items")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -137,9 +137,9 @@ public class ItemControllerTest {
                 .willReturn(output);
 
         mockMvc.perform(patch("/items/1")
-                .header(USER_HEADER, 2L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(update)))
+                        .header(USER_HEADER, 2L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(update)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Hockey stick"));
     }
@@ -155,9 +155,9 @@ public class ItemControllerTest {
                 .when(itemService).update(eq(2L), eq(1L), any());
 
         mockMvc.perform(patch("/items/1")
-                .header(USER_HEADER, 2L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(update)))
+                        .header(USER_HEADER, 2L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(update)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("Access denied: Not owner"));
     }
@@ -178,7 +178,7 @@ public class ItemControllerTest {
         given(itemService.getItemById(1L)).willReturn(output);
 
         mockMvc.perform(get("/items/1")
-                .header(USER_HEADER, 2L))
+                        .header(USER_HEADER, 2L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.ownerId").value(2));
@@ -190,7 +190,7 @@ public class ItemControllerTest {
         given(itemService.getItemById(1L)).willThrow(new NotFoundException("Not found"));
 
         mockMvc.perform(get("/items/1")
-                .header(USER_HEADER, 1L))
+                        .header(USER_HEADER, 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found: Not found"));
     }
@@ -224,7 +224,7 @@ public class ItemControllerTest {
         given(itemService.getItemsByOwnerId(1L)).willReturn(list);
 
         mockMvc.perform(get("/items")
-                .header(USER_HEADER, 1L))
+                        .header(USER_HEADER, 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
@@ -246,7 +246,7 @@ public class ItemControllerTest {
         given(itemService.searchItems("Hockey stick")).willReturn(list);
 
         mockMvc.perform(get("/items/search")
-                        .header(USER_HEADER,2L)
+                        .header(USER_HEADER, 2L)
                         .param("text", "Hockey stick"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Hockey stick"));
@@ -257,8 +257,8 @@ public class ItemControllerTest {
         given(itemService.searchItems("")).willReturn(List.of());
 
         mockMvc.perform(get("/items/search")
-                .header(USER_HEADER,1L)
-                .param("text", ""))
+                        .header(USER_HEADER, 1L)
+                        .param("text", ""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
@@ -272,9 +272,9 @@ public class ItemControllerTest {
         given(commentService.createComment(2L, 1L, create)).willReturn(output);
 
         mockMvc.perform(post("/items/1/comment")
-                .header(USER_HEADER, 2L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .header(USER_HEADER, 2L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(10))
                 .andExpect(jsonPath("$.text").value("Great stick!"));
@@ -287,9 +287,9 @@ public class ItemControllerTest {
                 .willThrow(new BadRequestException("Empty comment"));
 
         mockMvc.perform(post("/items/1/comment")
-                .header(USER_HEADER,2L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(create)))
+                        .header(USER_HEADER, 2L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(create)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("Bad request: Empty comment"));
     }

@@ -163,7 +163,7 @@ public class BookingRepositoryTest {
     void findBookingsByBookerId_emptyPage() {
         Page<Booking> page = bookingRepository.findBookingsByBookerId(
                 booker.getId(),
-                PageRequest.of(5,2)
+                PageRequest.of(5, 2)
         );
         assertTrue(page.getContent().isEmpty());
     }

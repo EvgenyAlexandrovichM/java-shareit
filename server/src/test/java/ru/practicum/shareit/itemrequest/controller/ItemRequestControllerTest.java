@@ -51,9 +51,9 @@ public class ItemRequestControllerTest {
         given(service.create(eq(USER_ID), any(ItemRequestCreateDto.class))).willReturn(output);
 
         mockMvc.perform(post("/requests")
-                .header("X-Sharer-User-Id", USER_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(input)))
+                        .header("X-Sharer-User-Id", USER_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(input)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(REQUEST_ID))
                 .andExpect(jsonPath("$.description").value("Need a stick"))
@@ -67,9 +67,9 @@ public class ItemRequestControllerTest {
                 .willThrow(new NotFoundException("User not found"));
 
         mockMvc.perform(post("/requests")
-                .header("X-Sharer-User-Id", USER_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(input)))
+                        .header("X-Sharer-User-Id", USER_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(input)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found: User not found"));
     }
@@ -83,7 +83,7 @@ public class ItemRequestControllerTest {
         given(service.getRequestsByUserId(USER_ID)).willReturn(List.of(dto));
 
         mockMvc.perform(get("/requests")
-                .header("X-Sharer-User-Id", USER_ID))
+                        .header("X-Sharer-User-Id", USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(REQUEST_ID))
                 .andExpect(jsonPath("$[0].description").value("Need a hockey stick"))
@@ -95,7 +95,7 @@ public class ItemRequestControllerTest {
     void getRequestsByUserId_throwNotFound() throws Exception {
         given(service.getRequestsByUserId(USER_ID)).willThrow(new NotFoundException("User not found"));
         mockMvc.perform(get("/requests")
-                .header("X-Sharer-User-Id", USER_ID))
+                        .header("X-Sharer-User-Id", USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found: User not found"));
     }
@@ -109,7 +109,7 @@ public class ItemRequestControllerTest {
         given(service.getAll(USER_ID, 0, 10)).willReturn(List.of(dto));
 
         mockMvc.perform(get("/requests/all")
-                .header("X-Sharer-User-Id", USER_ID))
+                        .header("X-Sharer-User-Id", USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(REQUEST_ID))
                 .andExpect(jsonPath("$[0].description").value("Need a hockey stick"));
@@ -118,9 +118,9 @@ public class ItemRequestControllerTest {
     @Test
     void getAllRequests_throwBadRequest() throws Exception {
         mockMvc.perform(get("/requests/all")
-                .header("X-Sharer-User-Id", USER_ID)
-                .param("from", "-1")
-                .param("size", "5"))
+                        .header("X-Sharer-User-Id", USER_ID)
+                        .param("from", "-1")
+                        .param("size", "5"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -129,7 +129,7 @@ public class ItemRequestControllerTest {
         given(service.getAll(USER_ID, 0, 10)).willThrow(new NotFoundException("User not found"));
 
         mockMvc.perform(get("/requests/all")
-                .header("X-Sharer-User-Id", USER_ID))
+                        .header("X-Sharer-User-Id", USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found: User not found"));
     }

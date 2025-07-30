@@ -72,6 +72,7 @@ public class CommentServiceImplTest {
         pastBooking.setEnd(LocalDateTime.now().minusDays(1));
         createdComment = new CommentCreateDto("Great stick");
     }
+
     @Test
     void createComment_success() {
         when(itemRepository.findById(item.getId()))

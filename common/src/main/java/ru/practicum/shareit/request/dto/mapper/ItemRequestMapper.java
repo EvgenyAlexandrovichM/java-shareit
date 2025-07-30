@@ -11,7 +11,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 
-@Mapper(config = MapStructConfig.class, uses = { ItemMapper.class })
+@Mapper(config = MapStructConfig.class, uses = {ItemMapper.class})
 public interface ItemRequestMapper {
 
     ItemRequestResponseDto toItemRequestResponseDto(ItemRequest request);
@@ -27,7 +27,7 @@ public interface ItemRequestMapper {
     );
 
     @Named("toItemRequestItemDto")
-    @Mapping(source = "name",     target = "name")
+    @Mapping(source = "name", target = "name")
     @Mapping(source = "owner.id", target = "ownerId")
     ItemRequestItemDto toItemRequestItemDto(Item item);
 }

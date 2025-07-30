@@ -13,7 +13,6 @@ import ru.practicum.shareit.user.service.UserService;
 import java.util.List;
 
 
-
 @RestController
 @RequiredArgsConstructor
 @Slf4j

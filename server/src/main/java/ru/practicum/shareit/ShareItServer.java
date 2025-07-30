@@ -9,8 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"ru.practicum.shareit.request.dto.mapper", "ru.practicum.shareit.mapperconfig", "ru.practicum.shareit"})
 public class ShareItServer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ShareItServer.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ShareItServer.class, args);
+    }
 
 }
