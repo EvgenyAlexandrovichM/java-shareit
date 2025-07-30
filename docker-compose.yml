@@ -30,7 +30,7 @@ services:
     environment:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=shareuser
-      - POSTGRES_PASSWORD=shareuser
+      - POSTGRES_PASSWORD=123456
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
