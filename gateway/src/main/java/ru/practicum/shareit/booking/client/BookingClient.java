@@ -61,7 +61,6 @@ public class BookingClient extends BaseClient {
     public ResponseEntity<Object> getBookingsByOwner(long ownerId, BookingState state) {
         log.info("Gateway: list bookings for ownerId: {}, state: {}", ownerId, state);
         Map<String, Object> params = Map.of("state", state.name());
-        // path: /owner?state={state}
         return get("/owner", ownerId, params);
     }
 }
