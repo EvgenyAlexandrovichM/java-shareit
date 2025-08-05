@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=shareituser
       - POSTGRES_PASSWORD=123456
     healthcheck:
-      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      test: [ "CMD-SHELL", "pg_isready -q -d shareit -U shareituser" ]
       timeout: 5s
       interval: 5s
       retries: 10
@@ -34,10 +34,12 @@ services:
   gateway:
     build: gateway
     image: shareit-gateway
+    restart: on-failure
     container_name: shareit-gateway
     ports:
       - "8080:8080"
     depends_on:
-      - server
+      server:
+        condition: service_healthy
     environment:
-      - SHAREIT_SERVER_URL=http://server:9090
+      SHAREIT_SERVER_URL: http://server:9090
