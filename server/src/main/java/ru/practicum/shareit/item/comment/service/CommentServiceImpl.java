@@ -17,6 +17,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,9 +36,11 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDto createComment(Long userId, Long itemId, CommentCreateDto dto) {
         Item item = getItemOrThrow(itemId);
         User author = getUserOrThrow(userId);
-        List<Booking> bookings = bookingRepository.findCompletedBookings(itemId, userId);
-        if (bookings.isEmpty()) {
-            throw new BadRequestException("User cannot comment, has not rented this item");
+        LocalDateTime now = LocalDateTime.now();
+        List<Booking> bookings = bookingRepository.findAllByItemAndBooker(item, author);
+
+        if (bookings.stream().noneMatch(b -> b.isFinished(now))) {
+            throw new BadRequestException("test");
         }
         Comment comment = CommentMapper.toComment(dto, item, author);
 

@@ -40,4 +40,9 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private BookingStatus status;
+
+    public boolean isFinished(LocalDateTime now) {
+        return getStatus() == BookingStatus.APPROVED && getEnd().isBefore(now);
+    }
+
 }

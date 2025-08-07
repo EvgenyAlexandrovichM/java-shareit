@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -79,8 +81,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b " +
             "FROM Booking b " +
-            "WHERE b.item.id = :itemId AND b.booker.id = :userId AND b.end < CURRENT_TIMESTAMP AND b.status = 'APPROVED'")
-    List<Booking> findCompletedBookings(@Param("itemId") Long itemId, @Param("userId") Long userId);
+            "WHERE b.item.id   = :itemId " +
+            "  AND b.booker.id = :userId " +
+            "  AND b.status    = 'APPROVED'")
+    List<Booking> findCompletedBookings(
+            @Param("itemId") Long itemId,
+            @Param("userId") Long userId
+    );
+
+    List<Booking> findAllByItemAndBooker(Item item, User booker);
 
     @Query("SELECT b " +
             "FROM Booking b " +

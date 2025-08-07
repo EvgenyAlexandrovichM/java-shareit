@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.errorresponse.ErrorResponse;
-import ru.practicum.shareit.exception.BadRequestException;
-import ru.practicum.shareit.exception.ConflictException;
-import ru.practicum.shareit.exception.ForbiddenException;
-import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

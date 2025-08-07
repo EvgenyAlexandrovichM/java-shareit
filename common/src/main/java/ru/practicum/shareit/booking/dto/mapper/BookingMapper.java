@@ -23,24 +23,24 @@ public class BookingMapper {
         );
     }
 
-    public static Booking toBooking(BookingResponseDto bookingResponseDto, Item item, User broker) {
+    public static Booking toBooking(BookingResponseDto bookingResponseDto, Item item, User booker) {
         return new Booking(
                 bookingResponseDto.getId(),
                 bookingResponseDto.getStart(),
                 bookingResponseDto.getEnd(),
                 item,
-                broker,
+                booker,
                 bookingResponseDto.getStatus()
         );
     }
 
-    public static Booking toBooking(BookingCreateDto bookingCreateDto, Item item, User broker) {
+    public static Booking toBooking(BookingCreateDto bookingCreateDto, Item item, User booker) {
         return new Booking(
                 null,
                 bookingCreateDto.getStart(),
                 bookingCreateDto.getEnd(),
                 item,
-                broker,
+                booker,
                 BookingStatus.WAITING);
     }
 }
