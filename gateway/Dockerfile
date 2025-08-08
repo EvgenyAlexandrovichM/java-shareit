@@ -1,3 +1,3 @@
-FROM amazoncorretto:11-alpine-jdk
-COPY target/*.jar gateway.jar
-ENTRYPOINT ["java","-jar","/gateway.jar"]
+FROM amazoncorretto:21-alpine
+COPY target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
