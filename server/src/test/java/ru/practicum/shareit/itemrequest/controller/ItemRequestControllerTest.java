@@ -115,14 +115,14 @@ public class ItemRequestControllerTest {
                 .andExpect(jsonPath("$[0].description").value("Need a hockey stick"));
     }
 
-//    @Test
-//    void getAllRequests_throwBadRequest() throws Exception {
-//        mockMvc.perform(get("/requests/all")
-//                        .header("X-Sharer-User-Id", USER_ID)
-//                        .param("from", "-1")
-//                        .param("size", "5"))
-//                .andExpect(status().isBadRequest());
-//    }
+    @Test
+    void getAllRequests_throwBadRequest() throws Exception {
+        mockMvc.perform(get("/requests/all")
+                        .header("X-Sharer-User-Id", USER_ID)
+                        .param("from", "-1")
+                        .param("size", "5"))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     void getAllRequests_throwNotFound() throws Exception {
