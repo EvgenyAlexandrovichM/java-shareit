@@ -32,18 +32,6 @@
         <module>server</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -62,7 +50,6 @@
                         </excludes>
                     </configuration>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -85,7 +72,9 @@
                     </configuration>
                     <executions>
                         <execution>
-                            <goals><goal>check</goal></goals>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
                             <phase>compile</phase>
                         </execution>
                     </executions>
@@ -108,7 +97,9 @@
                     </configuration>
                     <executions>
                         <execution>
-                            <goals><goal>check</goal></goals>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
                         </execution>
                     </executions>
                 </plugin>
@@ -123,11 +114,15 @@
                     <executions>
                         <execution>
                             <id>jacoco-initialize</id>
-                            <goals><goal>prepare-agent</goal></goals>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
                         </execution>
                         <execution>
                             <id>jacoco-check</id>
-                            <goals><goal>check</goal></goals>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
                             <configuration>
                                 <rules>
                                     <rule>
@@ -171,7 +166,9 @@
                         <execution>
                             <id>jacoco-report</id>
                             <phase>test</phase>
-                            <goals><goal>report</goal></goals>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
                         </execution>
                     </executions>
                 </plugin>
