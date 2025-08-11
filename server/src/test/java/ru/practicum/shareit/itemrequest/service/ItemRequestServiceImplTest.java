@@ -198,7 +198,7 @@ public class ItemRequestServiceImplTest {
         ItemRequest req1 = ItemRequest.builder().id(10L).build();
         ItemRequest req2 = ItemRequest.builder().id(11L).build();
         Page<ItemRequest> page = new PageImpl<>(List.of(req1, req2));
-        when(itemRequestRepository.findByRequesterIdNot(eq(userId), eq(PageRequest.of(from/size, size))))
+        when(itemRequestRepository.findByRequesterIdNot(eq(userId), eq(PageRequest.of(from / size, size))))
                 .thenReturn(page);
 
         List<Long> reqIds = List.of(10L, 11L);
