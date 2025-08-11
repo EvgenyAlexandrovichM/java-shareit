@@ -67,6 +67,15 @@ public class ItemRequestServiceImplTest {
     void createRequest_success() {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
+        when(mapper.toItemRequest(eq(createDto), eq(user))).thenAnswer(i -> {
+            ItemRequest req = ItemRequest.builder()
+                    .description(createDto.getDescription())
+                    .requester(user)
+                    .created(LocalDateTime.now())
+                    .build();
+            return req;
+        });
+
         ItemRequest savedRequest = ItemRequest.builder()
                 .id(requestId)
                 .description(createDto.getDescription())
@@ -116,8 +125,10 @@ public class ItemRequestServiceImplTest {
                 .build();
         when(itemRequestRepository.findByRequesterIdOrderByCreatedDesc(userId)).thenReturn(List.of(request));
 
+        List<Long> reqIds = List.of(requestId);
         Item item = new Item();
-        when(itemRepository.findByItemRequestId(requestId)).thenReturn(List.of(item));
+        item.setItemRequest(request);
+        when(itemRepository.findAllByItemRequestIdIn(reqIds)).thenReturn(List.of(item));
 
         ItemRequestWithItemsDto dto = ItemRequestWithItemsDto.builder()
                 .id(requestId)
@@ -179,37 +190,50 @@ public class ItemRequestServiceImplTest {
 
     @Test
     void getAll_success() {
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
         int from = 5;
         int size = 3;
-        ItemRequest request1 = ItemRequest.builder().id(10L).build();
-        ItemRequest request2 = ItemRequest.builder().id(11L).build();
-        Page<ItemRequest> page = new PageImpl<>(List.of(request1, request2));
-        when(itemRequestRepository.findByRequesterIdNot(userId, PageRequest.of(from / size, size)))
+
+        ItemRequest req1 = ItemRequest.builder().id(10L).build();
+        ItemRequest req2 = ItemRequest.builder().id(11L).build();
+        Page<ItemRequest> page = new PageImpl<>(List.of(req1, req2));
+        when(itemRequestRepository.findByRequesterIdNot(eq(userId), eq(PageRequest.of(from/size, size))))
                 .thenReturn(page);
 
-        when(itemRepository.findByItemRequestId(10L)).thenReturn(emptyList());
-        when(itemRepository.findByItemRequestId(11L)).thenReturn(emptyList());
+        List<Long> reqIds = List.of(10L, 11L);
+        Item itemA = new Item();
+        itemA.setItemRequest(req1);
+        Item itemB = new Item();
+        itemB.setItemRequest(req2);
+        when(itemRepository.findAllByItemRequestIdIn(reqIds)).thenReturn(List.of(itemA, itemB));
 
         ItemRequestWithItemsDto dto1 = ItemRequestWithItemsDto.builder().id(10L).items(emptyList()).build();
         ItemRequestWithItemsDto dto2 = ItemRequestWithItemsDto.builder().id(11L).items(emptyList()).build();
-        when(mapper.toItemRequestWithItemsDto(eq(request1), anyList())).thenReturn(dto1);
-        when(mapper.toItemRequestWithItemsDto(eq(request2), anyList())).thenReturn(dto2);
+
+        when(mapper.toItemRequestWithItemsDto(eq(req1), anyList())).thenReturn(dto1);
+        when(mapper.toItemRequestWithItemsDto(eq(req2), anyList())).thenReturn(dto2);
 
         List<ItemRequestWithItemsDto> result = service.getAll(userId, from, size);
 
         assertThat(result).containsExactly(dto1, dto2);
+        verify(itemRepository).findAllByItemRequestIdIn(reqIds);
     }
 
     @Test
     void getAll_returnEmptyList() {
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
         int from = 5;
         int size = 3;
-        when(itemRequestRepository.findByRequesterIdNot(userId, PageRequest.of(from / size, size)))
+
+        when(itemRequestRepository.findByRequesterIdNot(eq(userId), eq(PageRequest.of(from / size, size))))
                 .thenReturn(Page.empty());
 
         List<ItemRequestWithItemsDto> result = service.getAll(userId, from, size);
 
         assertThat(result).isEmpty();
+        verify(itemRepository, never()).findAllByItemRequestIdIn(anyList());
     }
 
 }

@@ -131,11 +131,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemResponseDto> searchItems(String text) {
         log.info("Getting items with text: {}", text);
-        if (text == null || text.isBlank()) {
-            log.warn("Empty search query provided, returning empty list");
-            return Collections.emptyList();
-        }
-
         String lowerCaseText = text.toLowerCase();
         List<Item> items = itemRepository.searchItems(lowerCaseText);
         return items

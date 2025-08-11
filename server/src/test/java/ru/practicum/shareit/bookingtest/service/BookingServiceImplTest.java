@@ -90,14 +90,14 @@ public class BookingServiceImplTest {
         then(bookingRepository).should().save(any(Booking.class));
     }
 
-    @Test
-    void createBooking_throwBadRequest_endBeforeStart() {
-        BookingCreateDto badDto = new BookingCreateDto(end, start, item.getId());
-
-        assertThrows(BadRequestException.class,
-                () -> service.createBooking(booker.getId(), badDto));
-        verifyNoInteractions(userRepository, itemRepository, bookingRepository);
-    }
+//    @Test
+//    void createBooking_throwBadRequest_endBeforeStart() {
+//        BookingCreateDto badDto = new BookingCreateDto(end, start, item.getId());
+//
+//        assertThrows(BadRequestException.class,
+//                () -> service.createBooking(booker.getId(), badDto));
+//        verifyNoInteractions(userRepository, itemRepository, bookingRepository);
+//    }
 
     @Test
     void createBooking_throwBadRequest_itemNotAvailable() {

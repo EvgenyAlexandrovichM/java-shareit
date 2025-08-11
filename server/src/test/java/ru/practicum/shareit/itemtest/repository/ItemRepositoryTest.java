@@ -109,4 +109,37 @@ public class ItemRepositoryTest {
         assertEquals(1, items.size());
         assertTrue(items.contains(item1));
     }
+
+    @Test
+    void findAllByItemRequestIdIn() {
+        ItemRequest request1 = itemRequestRepository.save(new ItemRequest(
+                null,
+                "Need first stick",
+                requester,
+                LocalDateTime.now()
+        ));
+        ItemRequest request2 = itemRequestRepository.save(new ItemRequest(
+                null,
+                "Need seconds tick",
+                requester,
+                LocalDateTime.now()
+        ));
+
+        item1.setItemRequest(request1);
+        item2.setItemRequest(request2);
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+
+        List<Item> all = itemRepository.findAllByItemRequestIdIn(List.of(request1.getId(), request2.getId()));
+        assertEquals(2, all.size());
+        assertTrue(all.contains(item1));
+        assertTrue(all.contains(item2));
+
+        List<Item> single = itemRepository.findAllByItemRequestIdIn(List.of(request1.getId()));
+        assertEquals(1, single.size());
+        assertTrue(single.contains(item1));
+
+        List<Item> empty = itemRepository.findAllByItemRequestIdIn(List.of(666L));
+        assertTrue(empty.isEmpty());
+    }
 }

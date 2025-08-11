@@ -18,8 +18,9 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,11 +38,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Transactional
     public ItemRequestResponseDto create(Long userId, ItemRequestCreateDto dto) {
         User requester = getUserOrThrow(userId);
-        ItemRequest itemRequest = ItemRequest.builder()
-                .description(dto.getDescription())
-                .requester(requester)
-                .created(LocalDateTime.now())
-                .build();
+        ItemRequest itemRequest = itemRequestMapper.toItemRequest(dto, requester);
         ItemRequest savedRequest = itemRequestRepository.save(itemRequest);
         return itemRequestMapper.toItemRequestResponseDto(savedRequest);
     }
@@ -50,12 +47,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestWithItemsDto> getRequestsByUserId(Long id) {
         getUserOrThrow(id);
         List<ItemRequest> requests = itemRequestRepository.findByRequesterIdOrderByCreatedDesc(id);
-        return requests.stream()
-                .map(itemRequest -> {
-                    List<Item> items = itemRepository.findByItemRequestId(itemRequest.getId());
-                    return itemRequestMapper.toItemRequestWithItemsDto(itemRequest, items);
-                })
-                .collect(Collectors.toList());
+        return enrichWithItems(requests);
     }
 
     @Override
@@ -69,13 +61,31 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestWithItemsDto> getAll(Long userId, Integer from, Integer size) {
+        getUserOrThrow(userId);
+
         Pageable pageable = PageRequest.of(from / size, size);
-        return itemRequestRepository.findByRequesterIdNot(userId, pageable)
-                .getContent()
-                .stream()
-                .map(itemRequest -> {
-                    List<Item> items = itemRepository.findByItemRequestId(itemRequest.getId());
-                    return itemRequestMapper.toItemRequestWithItemsDto(itemRequest, items);
+        List<ItemRequest> requests = itemRequestRepository.findByRequesterIdNot(userId, pageable).getContent();
+        return enrichWithItems(requests);
+    }
+
+    private List<ItemRequestWithItemsDto> enrichWithItems(List<ItemRequest> requests) {
+        if (requests.isEmpty()) {
+            return  Collections.emptyList();
+        }
+
+        List<Long> requestIds = requests.stream()
+                .map(ItemRequest::getId)
+                .collect(Collectors.toList());
+
+        List<Item> items = itemRepository.findAllByItemRequestIdIn(requestIds);
+
+        Map<Long, List<Item>> itemsByRequestId = items.stream()
+                .collect(Collectors.groupingBy(item -> item.getItemRequest().getId()));
+
+        return requests.stream()
+                .map(req -> {
+                    List<Item> it = itemsByRequestId.getOrDefault(req.getId(), Collections.emptyList());
+                    return itemRequestMapper.toItemRequestWithItemsDto(req, it);
                 })
                 .collect(Collectors.toList());
     }

@@ -38,11 +38,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto createBooking(Long userId, BookingCreateDto bookingCreateDto) {
-
-        if (!bookingCreateDto.getEnd().isAfter(bookingCreateDto.getStart())) {
-            throw new BadRequestException("End time must be after start time");
-        }
-
         User booker = getUserOrThrow(userId);
         Item item = getItemOrThrow(bookingCreateDto.getItemId());
         if (!item.getAvailable()) {

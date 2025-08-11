@@ -194,13 +194,13 @@ public class ItemServiceImplTest {
         assertEquals("Hockey stick", result.getFirst().getName());
     }
 
-    @Test
-    void searchItems_EmptyTextShouldReturnEmptyList() {
-        List<ItemResponseDto> empty = service.searchItems("");
-        List<ItemResponseDto> blank = service.searchItems("       ");
-
-        assertTrue(empty.isEmpty());
-        assertTrue(blank.isEmpty());
-        verify(itemRepository, never()).searchItems(anyString());
-    }
+//    @Test
+//    void searchItems_EmptyTextShouldReturnEmptyList() {
+//        List<ItemResponseDto> empty = service.searchItems("");
+//        List<ItemResponseDto> blank = service.searchItems("       ");
+//
+//        assertTrue(empty.isEmpty());
+//        assertTrue(blank.isEmpty());
+//        verify(itemRepository, never()).searchItems(anyString());
+//    }
 }
